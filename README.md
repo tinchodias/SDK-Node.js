@@ -58,7 +58,7 @@ var parameters = {
 };
 var options = {
 	wsdl : 'https://developers.todopago.com.ar/services/Authorize?wsdl',
-	endpoint : "https://developers.todopago.com.ar/services/Authorize",	
+	endpoint : "https://developers.todopago.com.ar/",	
 	Authorization:'PRISMA 912EC803B2CE49E4A541068D495AB570' 
 };
 ```
@@ -162,7 +162,7 @@ Para utlilizar el modo test se debe pasar un end point de prueba (provisto por T
 ```nodejs		
 var options = {
 	wsdl : 'https://developers.todopago.com.ar/services/Authorize?wsdl',
-	endpoint : "https://developers.todopago.com.ar/services/Authorize",	
+	endpoint : "https://developers.todopago.com.ar/",	
 	Authorization:'PRISMA 912EC803B2CE49E4A541068D495AB570' 
 }; // End Point (para Tests) y wsdl provisto por TODO PAGO;		
 ```		

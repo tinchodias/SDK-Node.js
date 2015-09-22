@@ -2,7 +2,7 @@ var sdk = require('../lib/todo-pago');
 
 var options = {
 	wsdl : 'https://developers.todopago.com.ar/services/t/1.1/Authorize?wsdl',
-	endpoint : "https://developers.todopago.com.ar/services/t/1.1/Authorize",	
+	endpoint : "https://developers.todopago.com.ar/",	
 	Authorization:'PRISMA f3d8b72c94ab4a06be2ef7c95490f7d3'
 };
 
@@ -12,7 +12,7 @@ exampleGetStatus();
 exampleGetPaymentMethods();
 
 function exampleGetStatus(){
-	options.endpoint= "https://developers.todopago.com.ar/t/1.1";
+	options.endpoint= "https://developers.todopago.com.ar/";
 	sdk.getStatus(options, '2153', '02', function(result, err){
 		console.log("-------------------***-------------------");
 		console.log("getStatus");
@@ -23,7 +23,7 @@ function exampleGetStatus(){
 }
 
 function exampleGetPaymentMethods(){
-	options.endpoint= "https://developers.todopago.com.ar/t/1.1";
+	options.endpoint= "https://developers.todopago.com.ar/";
 	sdk.getPaymentMethods(options, '2153', function(result, err){
 		console.log("-------------------***-------------------");
 		console.log("getAllPaymentMethods");
