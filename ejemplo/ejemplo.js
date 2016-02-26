@@ -1,8 +1,7 @@
 var sdk = require('../lib/todo-pago');
 
 var options = {
-	wsdl : 'https://developers.todopago.com.ar/services/t/1.1/Authorize?wsdl',
-	endpoint : "https://developers.todopago.com.ar/",	
+	endpoint : "developers",	
 	Authorization:'PRISMA f3d8b72c94ab4a06be2ef7c95490f7d3'
 };
 
@@ -10,9 +9,11 @@ exampleSendAuthorizeRequest();
 exampleGetAuthorizeAnswer();
 exampleGetStatus();
 exampleGetPaymentMethods();
+exampleGetByRangeDateTime();
+exampleReturnRequest();
+exampleVoidRequest();
 
 function exampleGetStatus(){
-	options.endpoint= "https://developers.todopago.com.ar/";
 	sdk.getStatus(options, '2153', '02', function(result, err){
 		console.log("-------------------***-------------------");
 		console.log("getStatus");
@@ -23,7 +24,6 @@ function exampleGetStatus(){
 }
 
 function exampleGetPaymentMethods(){
-	options.endpoint= "https://developers.todopago.com.ar/";
 	sdk.getPaymentMethods(options, '2153', function(result, err){
 		console.log("-------------------***-------------------");
 		console.log("getAllPaymentMethods");
@@ -117,5 +117,57 @@ function exampleSendAuthorizeRequest(){
 		console.log(result);
 		console.log(err);
 		console.log("-------------------");
+	});
+}
+function exampleGetByRangeDateTime(){
+	
+	var parameters = {
+		'MERCHANT': '2153',
+		'STARTDATE': '2015-01-01T17:34:42.903',
+		'ENDDATE': '2015-12-10T17:34:42.903'
+	};
+	
+	sdk.getByRangeDateTime(options, parameters, function(result, err){
+		console.log("-------------------***-------------------");
+		console.log("GetByRangeDateTime");
+		console.log(result);
+		console.log(err);
+		console.log("-------------------***-------------------");
+	});
+}
+
+function exampleReturnRequest(){
+	
+	var parameters = {
+		'Security': '108fc2b7c8a640f2bdd3ed505817ffde',
+		'Merchant': '2669',
+		'RequestKey': '0d801e1c-e6b1-672c-b717-5ddbe5ab97d6',
+		'AMOUNT': 1.00
+	};
+	
+	sdk.returnRequest(options, parameters, function(result, err){
+		console.log("-------------------***-------------------");
+		console.log("ReturnRequest");
+		console.log(result);
+		console.log(err);
+		console.log("-------------------***-------------------");
+	});
+}
+
+
+function exampleVoidRequest(){
+	
+	var parameters = {
+		'Security': '108fc2b7c8a640f2bdd3ed505817ffde',
+		'Merchant': '2669',
+		'RequestKey': '0d801e1c-e6b1-672c-b717-5ddbe5ab97d6'
+	};
+	
+	sdk.voidRequest(options, parameters, function(result, err){
+		console.log("-------------------***-------------------");
+		console.log("VoidRequest");
+		console.log(result);
+		console.log(err);
+		console.log("-------------------***-------------------");
 	});
 }
