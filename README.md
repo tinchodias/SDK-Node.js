@@ -80,12 +80,6 @@ var payload = {
 		'OPERATIONID':"8000",
 		'CURRENCYCODE': 032,
 		'AMOUNT':"1.00",
-
-		//Optionals
-		'AVAILABLEPAYMENTMETHODSIDS': "1#194#43#45",
-		'PUSHNOTIFYMETHOD' : "",
-		'PUSHNOTIFYENDPOINT': "",  
-		'PUSHNOTIFYSTATES': ""
 	};
 
 var callback = function(result, err){
