@@ -1,9 +1,12 @@
 var sdk = require('../lib/todo-pago');
 
+
+
 var options = {
 	endpoint : "developers",	
 	Authorization:'PRISMA f3d8b72c94ab4a06be2ef7c95490f7d3'
 };
+
 
 exampleSendAuthorizeRequest();
 exampleGetAuthorizeAnswer();
@@ -12,6 +15,8 @@ exampleGetPaymentMethods();
 exampleGetByRangeDateTime();
 exampleReturnRequest();
 exampleVoidRequest();
+exampleGetCredentials();
+
 
 function exampleGetStatus(){
 	sdk.getStatus(options, '2153', '02', function(result, err){
@@ -22,6 +27,8 @@ function exampleGetStatus(){
 		console.log("-------------------***-------------------");
 	});
 }
+
+
 
 function exampleGetPaymentMethods(){
 	sdk.getPaymentMethods(options, '2153', function(result, err){
@@ -171,3 +178,19 @@ function exampleVoidRequest(){
 		console.log("-------------------***-------------------");
 	});
 }
+
+
+function exampleGetCredentials(){
+	var email = 'sebastian.macias@softtek.com';
+	var pass = 'Password01';
+
+	sdk.getCredentials(email, pass, options ,  function(result, err){
+		console.log("-------------------***-------------------");
+		console.log("getCredentials:");
+		console.log(result);
+		console.log('err: ');
+		console.log(err);
+		console.log("-------------------***-------------------");
+	});
+}
+
