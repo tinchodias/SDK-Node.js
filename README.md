@@ -1,25 +1,31 @@
 <a name="inicio"></a>		
-sdk-Node		
-=======		
-		
-Modulo para conexión con gateway de pago Todo Pago		
+Todo Pago - módulo SDK-NodeJS para conexión con gateway de pago		
+=======
 
-######[Instalación](#instalacion)		
-######[Versiones de php soportadas](#Versionesdephpsoportadas)
-######[Generalidades](#general)	
-######[Uso](#uso)		
-######[Datos adicionales para prevencion de fraude] (#datosadicionales) 		
-######[Ejemplo](#ejemplo)		
-######[Modo test](#test)
-######[Status de la operación](#status)
-######[Consulta de operaciones por rango de tiempo](#statusdate)
-######[Devoluciones](#devoluciones)
-######[Diagrama de secuencia](#secuencia)
-######[Tablas de referencia](#tablas)	
-######[Tabla de errores](#codigoerrores)
+ + [Instalación](#instalacion)
+ 	+ [Versiones de Node soportadas](#versionesdenodesoportadas)
+ 	+ [Generalidades](#general)
+ + [Uso](#uso)		
+    + [Inicializar la clase correspondiente al conector (todo-pago.js)](#initconector)
+    + [Solicitud de autorización](#solicitudautorizacion)
+    + [Confirmación de transacción](#confirmatransaccion)
+    + [Ejemplo](#ejemplo)
+    + [Modo test](#test)
+ + [Datos adicionales para prevención de fraude](#datosadicionales) 
+ + [Características](#caracteristicas)
+    + [Status de la operación](#status)
+    + [Consulta de operaciones por rango de tiempo](#statusdate)
+    + [Devolucion](#devoluciones)
+    + [Devolucion parcial](#devolucionparcial)
+    + [Formulario hibrido](#formhidrido)
+    + [Obtener Credenciales](#credenciales)
+ + [Diagrama de secuencia](#secuencia)
+ + [Tablas de referencia](#tablareferencia)		
+ + [Tabla de errores](#codigoerrores)	
+
 
 <a name="instalacion"></a>		
-## Instalación		
+## Instalación	
 Se debe descargar la última versión desde del botón Download ZIP o desde https://github.com/TodoPago/sdk-nodejs/archive/master.zip.
 Una vez descargado y descomprimido, debe incluirse el archivo todo-pago.js como modulo del proyecto.
 
@@ -31,21 +37,25 @@ Instalar con [npm](http://github.com/isaacs/npm):
 <br />
 [<sub>Volver a inicio</sub>](#inicio)
 
-<a name="Versionesdephpsoportadas"></a>		
-## Versiones de node soportadas		
+<a name="versionesdenodesoportadas"></a>		
+#### Versiones de node soportadas
 La versi&oacute;n implementada de la SDK, esta testeada para versiones desde Node 10.x en adelante.
-<br />		
-[<sub>Volver a inicio</sub>](#inicio)		
+<br />
+[<sub>Volver a inicio</sub>](#inicio)
 
 <a name="general"></a>
-## Generalidades
+#### Generalidades
 Esta versión soporta únicamente pago en moneda nacional argentina (CURRENCYCODE = 32).
-[<sub>Volver a inicio</sub>](#inicio)		
+</br>
+[<sub>Volver a inicio</sub>](#inicio)
+
 
 
 <a name="uso"></a>		
-## Uso		
-####1.Importar el modulo: 
+## Uso	
+<a name="initconector"></a>	
+#### Inicializar la clase correspondiente al conector (todo-pago.js) 
+- Importar el modulo: 
    ```nodejs
    var sdk = require('../lib/todo-pago');
    ```
@@ -61,26 +71,13 @@ var options = {
 	Authorization:'PRISMA f3d8b72c94ab4a06be2ef7c95490f7d3'
 };
 ```
-- Los datos como Authorization , merchantId y ApiKey se pueden obtener mediante el metodo getCredentials del objeto User llamada desde el sdk.
-- un ejemplo esta en ejemplo/ejemplo.js
-```
-	var email = 'sebastian.macias@softtek.com';
-	var pass = 'Password01';
+- Los datos como Authorization , merchantId y ApiKey se pueden obtener mediante el metodo getCredentials [Obtener Credenciales](#credenciales)
+</br>
+[<sub>Volver a inicio</sub>](#inicio)
 
-	sdk.getCredentials(email, pass, options ,  function(result, err){
-		console.log("-------------------***-------------------");
-		console.log("getCredentials:");
-		console.log(result);
-		console.log('err: ');
-		console.log(err);
-		console.log("-------------------***-------------------");
-	});
-
-
-```
-
-####2.Solicitud de autorización		
-En este caso hay que llamar a sendAuthorizeRequest(), el resultado se obtendra mediante la funcion callback: 		
+<a name="solicitudautorizacion"></a>
+#### Solicitud de autorización
+- En este caso hay que llamar a sendAuthorizeRequest(), el resultado se obtendra mediante la funcion callback: 		
 ```nodejs	
 var parameters = {
 		'Session': 'ABCDEF-1234-12221-FDE1-00000200',
@@ -106,10 +103,13 @@ var callback = function(result, err){
 }
 sdk.sendAutorizeRequest(options, parameters, payload, callback);		
 ```		
-<ins><strong>datos propios del comercio</strong></ins>		
- 
-####3.Confirmación de transacción.		
-En este caso hay que llamar a getAuthorizeAnswer(), enviando como parámetro un objeto como se describe a continuación.		
+<ins><strong>datos propios del comercio</strong></ins>
+</br>
+[<sub>Volver a inicio</sub>](#inicio)
+
+<a name="confirmatransaccion"></a>
+#### Confirmación de transacción
+- En este caso hay que llamar a getAuthorizeAnswer(), enviando como parámetro un objeto como se describe a continuación.		
 ```nodejs		
 var parameters = {
 		'Security'   : 'f3d8b72c94ab4a06be2ef7c95490f7d3', 
@@ -130,13 +130,35 @@ sdk.getAutorizeAnswer(options, parameters, function(result, err){
 <strong><ins>*Importante:</ins></strong>El campo AnswerKey se adiciona  en la redireccion que se realiza a alguna de las direcciones ( URL ) epecificadas en el  servicio SendAurhorizationRequest, esto sucede cuando la transaccion ya fue resuelta y es necesario regresar al Site para finalizar la transaccion de pago, tambien se adiciona el campo Order, el cual tendra el contenido enviado en el campo OPERATIONID. para nuestro ejemplo: <strong>http://susitio.com/paydtodopago/ok?Order=27398173292187&Answer=1111-2222-3333-4444-5555-6666-7777</strong>		
 		
 Este método devuelve el resumen de los datos de la transacción.		
-<br />		
-		
-[<sub>Volver a inicio</sub>](#inicio)		
-		
-<a name="datosadicionales"></a>		
-## Datos adicionales para control de fraude
+<br />	
+[<sub>Volver a inicio</sub>](#inicio)
 
+
+<a name="ejemplo"></a>		
+#### Ejemplo	
+- Existe un ejemplo en la carpeta https://github.com/TodoPago/SDK-Node.js/tree/master/ejemplo que muestra los resultados de los métodos principales del SDK.
+- Para ejecutar este ejemplo correr la linea de comando npm install y luego ejecutar node ejemplo.js
+
+</br>
+[<sub>Volver a inicio</sub>](#inicio)
+
+<a name="test"></a>		
+#### Modo test	
+- Para utlilizar el modo test se debe pasar un end point de prueba (provisto por TODO PAGO).		
+		
+```nodejs		
+var options = {
+	endpoint : "developers",	
+	Authorization:'PRISMA f3d8b72c94ab4a06be2ef7c95490f7d3'
+}; // End Point = "developers" para test	
+```
+</br>
+[<sub>Volver a inicio</sub>](#inicio)
+
+
+
+<a name="datosadicionales"></a>		
+## Datos adicionales para prevención de fraude
 ##### Parámetros Adicionales en el post inicial:		
 ```nodejs		
 var payload = {		
@@ -184,38 +206,28 @@ var payload = {
 'CSITQUANTITY':'1', //Cantidad del producto. CONDICIONAL.		
 'CSITUNITPRICE':'10.01', //Formato Idem CSITTOTALAMOUNT. CONDICIONAL.			
 	...........................................................		
-```		
-	
-[<sub>Volver a inicio</sub>](#inicio)		
-		
-<a name="ejemplo"></a>		
-## Ejemplo		
-Existe un ejemplo en la carpeta https://github.com/TodoPago/SDK-Node.js/tree/master/ejemplo que muestra los resultados de los métodos principales del SDK.
-
-Para ejecutar este ejemplo correr la linea de comando npm install y luego ejecutar node ejemplo.js
-		
-<a name="test"></a>		
-## Modo Test		
-Para utlilizar el modo test se debe pasar un end point de prueba (provisto por TODO PAGO).		
-		
-```nodejs		
-var options = {
-	endpoint : "developers",	
-	Authorization:'PRISMA f3d8b72c94ab4a06be2ef7c95490f7d3'
-}; // End Point = "developers" para test	
-```		
+```
 [<sub>Volver a inicio</sub>](#inicio)	
-<a name="status"></a>
-## Status de la Operación
-La SDK cuenta con un m&eacute;todo para consultar el status de la transacci&oacute;n desde la misma SDK. El m&eacute;todo se utiliza de la siguiente manera:
+
+
+
+
+<a name="caracteristicas"></a>		
+## Características	
+
+<a name="status"></a>		
+#### Status de la operación	
+- La SDK cuenta con un m&eacute;todo para consultar el status de la transacci&oacute;n desde la misma SDK. El m&eacute;todo se utiliza de la siguiente manera:
 ```nodejs
 sdk.getStatus(options, merchant, operationId, callback);// Merchant es el id site y operationId es el id operación que se envió en el objeto a través del método sendAuthorizeRequest() 
 ```
-El siguiente m&eacute;todo retornara el status actual de la transacci&oacute;n en Todopago.
-[<sub>Volver a inicio</sub>](#inicio)		
+- Dicho m&eacute;todo retornara el status actual de la transacci&oacute;n en Todopago.
 
-<a name="statusdate"></a>
-## Consulta de operaciones por rango de tiempo
+</br>
+[<sub>Volver a inicio</sub>](#inicio)
+
+<a name="statusdate"></a>		
+#### Consulta de operaciones por rango de tiempo
 En este caso hay que llamar a getByRangeDateTime() y devolvera todas las operaciones realizadas en el rango de fechas dado
 
 ```nodejs
@@ -236,17 +248,14 @@ En este caso hay que llamar a getByRangeDateTime() y devolvera todas las operaci
 	
 
 ```
-
+</br>
 [<sub>Volver a inicio</sub>](#inicio)	
 
-<a name="devoluciones"></a>
-## Devoluciones
-
+<a name="devoluciones"></a>		
+#### Devoluciones		
 La SDK dispone de métodos para realizar la devolución online, total o parcial, de una transacción realziada a traves de TodoPago.
-
-#### Devolución Total
-
-Se debe llamar al método ```voidRequest``` de la siguiente manera:
+- Devolución Total
+- Se debe llamar al método ```voidRequest``` de la siguiente manera:
 ```nodejs
 
 	var parameters = {
@@ -265,7 +274,7 @@ Se debe llamar al método ```voidRequest``` de la siguiente manera:
 	});
 ```
 
-También se puede llamar al método ```voidRequest``` de la esta otra manera:
+- También se puede llamar al método ```voidRequest``` de la esta otra manera:
 ```nodejs
 
 	var parameters = {
@@ -283,8 +292,11 @@ También se puede llamar al método ```voidRequest``` de la esta otra manera:
 		console.log("-------------------***-------------------");
 	});
 
-#### Devolución Parcial
+</br>
+[<sub>Volver a inicio</sub>](#inicio)	
 
+<a name="devolucionparcial"></a>		
+#### Devolucion parcial		
 Se debe llamar al método ```returnRequest``` de la siguiente manera:
 ```nodejs
 
@@ -322,16 +334,147 @@ También se puede llamar al método ```returnRequest``` de la esta otra manera:
 		console.log("-------------------***-------------------");
 	});
 ```
+</br>
+[<sub>Volver a inicio</sub>](#inicio)
 
-[<sub>Volver a inicio</sub>](#inicio)	
 
 
-<a name="secuencia"></a>
-##Diagrama de secuencia
+
+<a name="formhidrido"></a>		
+#### Formulario hibrido	
+**Conceptos basicos**<br>
+El formulario hibrido, es una alternativa al medio de pago actual por redirección al formulario externo de TodoPago.<br> 
+Con el mismo, se busca que el comercio pueda adecuar el look and feel del formulario a su propio diseño.
+
+**Libreria**<br>
+El formulario requiere incluir en la pagina una libreria Javascript de TodoPago.<br>
+El endpoint depende del entorno:
++ Desarrollo: https://developers.todopago.com.ar/resources/TPHybridForm-v0.1.js
++ Produccion: https://forms.todopago.com.ar/resources/TPHybridForm-v0.1.js
+
+**Restricciones y libertades en la implementación**
+
++ Ninguno de los campos del formulario podrá contar con el atributo name.
++ Se deberá proveer de manera obligatoria un botón para gestionar el pago con Billetera Todo Pago.
++ Todos los elementos de tipo <option> son completados por la API de Todo Pago.
++ Los campos tienen un id por defecto. Si se prefiere utilizar otros ids se deberán especificar los
+mismos cuando se inicialice el script de Todo Pago.
++ Pueden aplicarse todos los detalles visuales que se crean necesarios, la API de Todo Pago no
+altera los atributos class y style.
++ Puede utilizarse la API para setear los atributos placeholder del formulario, para ello deberá
+especificar dichos placeholders en la inicialización del formulario "window.TPFORMAPI.hybridForm.setItem". En caso de que no se especifiquen los placeholders se usarán los valores por defecto de la API.
+
+**HTML del formulario**
+
+El formulario implementado debe contar al menos con los siguientes campos.
+
+```html
+<body>
+	<select id="formaDePagoCbx"></select>
+	<select id="bancoCbx"></select>
+	<select id="promosCbx"></select>
+	<label id="labelPromotionTextId"></label>
+	<input id="numeroTarjetaTxt"/>
+	<input id="mesTxt"/>
+	<input id="anioTxt"/>
+	<input id="codigoSeguridadTxt"/>
+	<label id="labelCodSegTextId"></label>
+	<input id="apynTxt"/>
+	<select id="tipoDocCbx"></select>
+	<input id="nroDocTxt"/>
+	<input id="emailTxt"/><br/>
+	<button id="MY_btnConfirmarPago"/>
+</body>
+```
+
+**Inizialización y parametros requeridos**<br>
+Para inicializar el formulario se usa window.TPFORMAPI.hybridForm.initForm. El cual permite setear los elementos y ids requeridos.
+
+Para inicializar un ítem de pago, es necesario llamar a window.TPFORMAPI.hybridForm.setItem. Este requiere obligatoriamente el parametro publicKey que corresponde al PublicRequestKey (entregado por el SAR).
+Se sugiere agregar los parametros usuario, e-mail, tipo de documento y numero.
+
+**Javascript**
+```js
+window.TPFORMAPI.hybridForm.initForm({
+    callbackValidationErrorFunction: 'validationCollector',
+	callbackCustomSuccessFunction: 'customPaymentSuccessResponse',
+	callbackCustomErrorFunction: 'customPaymentErrorResponse',
+	botonPagarId: 'MY_btnConfirmarPago',
+	modalCssClass: 'modal-class',
+	modalContentCssClass: 'modal-content',
+	beforeRequest: 'initLoading',
+	afterRequest: 'stopLoading'
+});
+
+window.TPFORMAPI.hybridForm.setItem({
+    publicKey: 'taf08222e-7b32-63d4-d0a6-5cabedrb5782', //obligatorio
+    defaultNombreApellido: 'Usuario',
+    defaultNumeroDoc: 20234211,
+    defaultMail: 'todopago@mail.com',
+    defaultTipoDoc: 'DNI'
+});
+
+//callbacks de respuesta del pago
+function validationCollector(parametros) {
+}
+function customPaymentSuccessResponse(response) {
+}
+function customPaymentErrorResponse(response) {
+}
+function initLoading() {
+}
+function stopLoading() {
+}
+```
+
+**Callbacks**<br>
+El formulario define callbacks javascript, que son llamados según el estado y la informacion del pago realizado:
++ customPaymentSuccessResponse: Devuelve response si el pago se realizo correctamente.
++ customPaymentErrorResponse: Si hubo algun error durante el proceso de pago, este devuelve el response con el codigo y mensaje correspondiente.
+
+**Ejemplo de Implementación**:
+<a href="/form_hibrido-ejemplo/index.html" target="_blank">Formulario hibrido</a>
+<br>
+
+[<sub>Volver a inicio</sub>](#inicio)
+
+
+
+
+<a name="credenciales"></a>		
+#### Obtener Credenciales	
+- Los datos como Authorization , merchantId y ApiKey se pueden obtener mediante el metodo getCredentials del objeto User llamada desde el sdk.
+- se debe pasar por parametro los datos de ingreso de todoPago (mail y password) en caso de no tener una cuenta podes registrarte en http://www.todopago.com.ar/registrate  y generar tus credenciales en herramientas -> comercios:integración
+
+- un ejemplo esta en ejemplo/ejemplo.js
+```
+	var email = 'sebastian.macias@gmail.com';
+	var pass = 'Password01';
+
+	sdk.getCredentials(email, pass, options ,  function(result, err){
+		console.log("-------------------***-------------------");
+		console.log("getCredentials:");
+		console.log(result);
+		console.log('err: ');
+		console.log(err);
+		console.log("-------------------***-------------------");
+	});
+
+
+```
+</br>
+[<sub>Volver a inicio</sub>](#inicio)
+
+
+<a name="secuencia"></a>		
+## Diagrama de secuencia
 ![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/secuencia-page-001.jpg)
+</br>
+[<sub>Volver a inicio</sub>](#inicio)
 
-<a name="tablas"></a>		
-## Tablas de Referencia		
+
+<a name="tablareferencia"></a>		
+## Tablas de referencia
 ######[Códigos de Estado](#cde)		
 ######[Provincias](#p)		
 <a name="cde"></a>		
@@ -401,12 +544,14 @@ También se puede llamar al método ```returnRequest``` de la esta otra manera:
 <tr><td>Santiago del Estero</td><td>G</td></tr>		
 <tr><td>Tierra del Fuego</td><td>V</td></tr>		
 <tr><td>Tucumán</td><td>T</td></tr>		
-</table>		
+</table>
+</br>		
 [<sub>Volver a inicio</sub>](#inicio)
 
-<a name="codigoerrores"></a>    
-## Tabla de errores     
 
+
+<a name="codigoerrores"></a>		
+## Tabla de errores
 <table>		
 <tr><th>Id mensaje</th><th>Mensaje</th></tr>				
 <tr><td>-1</td><td>Aprobada.</td></tr>
@@ -459,5 +604,5 @@ También se puede llamar al método ```returnRequest``` de la esta otra manera:
 <tr><td>99999</td><td>Lo sentimos, la operación no pudo completarse. Comunicate con la entidad emisora de la tarjeta para verificar el incoveniente o seleccioná otro medio de pago.</td></tr>
 </table>
 
-[<sub>Volver a inicio</sub>](#inicio)
 
+[<sub>Volver a inicio</sub>](#inicio)
