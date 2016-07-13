@@ -297,6 +297,7 @@ La SDK dispone de métodos para realizar la devolución online, total o parcial,
 
 <a name="devolucionparcial"></a>		
 #### Devolucion parcial		
+
 Se debe llamar al método ```returnRequest``` de la siguiente manera:
 ```javascript
 
