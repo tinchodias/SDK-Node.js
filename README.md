@@ -56,13 +56,13 @@ Esta versión soporta únicamente pago en moneda nacional argentina (CURRENCYCOD
 <a name="initconector"></a>	
 #### Inicializar la clase correspondiente al conector (todo-pago.js) 
 - Importar el modulo: 
-   ```nodejs
+   ```javascript
    var sdk = require('../lib/todo-pago');
    ```
 - crear dos objetos (uno de configuración y el otro con los parametros) 
 - La configuración debe contar con el ApiKey provisto por Todo Pago
 
-```nodejs
+```javascript
 var parameters = {
 };
 
@@ -78,7 +78,7 @@ var options = {
 <a name="solicitudautorizacion"></a>
 #### Solicitud de autorización
 - En este caso hay que llamar a sendAuthorizeRequest(), el resultado se obtendra mediante la funcion callback: 		
-```nodejs	
+```javascript	
 var parameters = {
 		'Session': 'ABCDEF-1234-12221-FDE1-00000200',
 		'Security':'f3d8b72c94ab4a06be2ef7c95490f7d3',
@@ -110,7 +110,7 @@ sdk.sendAutorizeRequest(options, parameters, payload, callback);
 <a name="confirmatransaccion"></a>
 #### Confirmación de transacción
 - En este caso hay que llamar a getAuthorizeAnswer(), enviando como parámetro un objeto como se describe a continuación.		
-```nodejs		
+```javascript		
 var parameters = {
 		'Security'   : 'f3d8b72c94ab4a06be2ef7c95490f7d3', 
 		'Merchant' 	 : '2153',
@@ -146,7 +146,7 @@ Este método devuelve el resumen de los datos de la transacción.
 #### Modo test	
 - Para utlilizar el modo test se debe pasar un end point de prueba (provisto por TODO PAGO).		
 		
-```nodejs		
+```javascript		
 var options = {
 	endpoint : "developers",	
 	Authorization:'PRISMA f3d8b72c94ab4a06be2ef7c95490f7d3'
@@ -160,7 +160,7 @@ var options = {
 <a name="datosadicionales"></a>		
 ## Datos adicionales para prevención de fraude
 ##### Parámetros Adicionales en el post inicial:		
-```nodejs		
+```javascript		
 var payload = {		
 'CSBTCITY':'Villa General Belgrano', //Ciudad de facturación, OBLIGATORIO.		
 'CSBTCOUNTRY':'AR', //País de facturación. OBLIGATORIO. Código ISO. (http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)		
@@ -218,7 +218,7 @@ var payload = {
 <a name="status"></a>		
 #### Status de la operación	
 - La SDK cuenta con un m&eacute;todo para consultar el status de la transacci&oacute;n desde la misma SDK. El m&eacute;todo se utiliza de la siguiente manera:
-```nodejs
+```javascript
 sdk.getStatus(options, merchant, operationId, callback);// Merchant es el id site y operationId es el id operación que se envió en el objeto a través del método sendAuthorizeRequest() 
 ```
 - Dicho m&eacute;todo retornara el status actual de la transacci&oacute;n en Todopago.
@@ -230,7 +230,7 @@ sdk.getStatus(options, merchant, operationId, callback);// Merchant es el id sit
 #### Consulta de operaciones por rango de tiempo
 En este caso hay que llamar a getByRangeDateTime() y devolvera todas las operaciones realizadas en el rango de fechas dado
 
-```nodejs
+```javascript
 
 	var parameters = {
 		'MERCHANT': '2153',
@@ -256,7 +256,7 @@ En este caso hay que llamar a getByRangeDateTime() y devolvera todas las operaci
 La SDK dispone de métodos para realizar la devolución online, total o parcial, de una transacción realziada a traves de TodoPago.
 - Devolución Total
 - Se debe llamar al método ```voidRequest``` de la siguiente manera:
-```nodejs
+```javascript
 
 	var parameters = {
 		'Security': '108fc2b7c8a640f2bdd3ed505817ffde',
@@ -275,7 +275,7 @@ La SDK dispone de métodos para realizar la devolución online, total o parcial,
 ```
 
 - También se puede llamar al método ```voidRequest``` de la esta otra manera:
-```nodejs
+```javascript
 
 	var parameters = {
 		'Security': '108fc2b7c8a640f2bdd3ed505817ffde',
@@ -298,7 +298,7 @@ La SDK dispone de métodos para realizar la devolución online, total o parcial,
 <a name="devolucionparcial"></a>		
 #### Devolucion parcial		
 Se debe llamar al método ```returnRequest``` de la siguiente manera:
-```nodejs
+```javascript
 
 	var parameters = {
 		'Security': '108fc2b7c8a640f2bdd3ed505817ffde',
@@ -317,7 +317,7 @@ Se debe llamar al método ```returnRequest``` de la siguiente manera:
 ```
 
 También se puede llamar al método ```returnRequest``` de la esta otra manera:
-```nodejs
+```javascript
 
 	var parameters = {
 		'Security': '108fc2b7c8a640f2bdd3ed505817ffde',
